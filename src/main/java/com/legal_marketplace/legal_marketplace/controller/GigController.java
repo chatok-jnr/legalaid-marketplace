@@ -5,6 +5,11 @@ import com.legal_marketplace.legal_marketplace.dto.response.GigResponse;
 import com.legal_marketplace.legal_marketplace.service.GigService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -68,6 +73,29 @@ public class GigController {
     public ResponseEntity<Void> deleteGig(@PathVariable("id") UUID gigId) {
         gigService.deleteGig(gigId, getAuthenticatedUserEmail());
         return ResponseEntity.noContent().build();
+    }
+
+    // Get all Public gigs
+    @PreAuthorize("hasAnyRole('LAWYER', 'CLIENT', 'ADMIN')")
+    @GetMapping("/public")
+    public ResponseEntity<Page<GigResponse.OthersGig>> getPublicGigs(
+            @PageableDefault(size = 30, sort = "id", direction = Sort.Direction.DESC)
+            Pageable pageable
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(gigService.getAllPublicGigs(pageable));
+    }
+
+    // Get a specific public gig by id
+    @PreAuthorize("hasAnyRole('LAWYER', 'CLIENT', 'ADMIN')")
+    @GetMapping("/public/{gigId}")
+    public ResponseEntity<GigResponse.OtherGig> getPublicGigByGigId(
+            @PathVariable("gigId") UUID gigId
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(gigService.getPublicGigByGigId(gigId));
     }
 }
 

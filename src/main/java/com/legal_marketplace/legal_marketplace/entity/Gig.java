@@ -27,7 +27,7 @@ public class Gig {
     private UUID lawyerId;
 
     @Column(name = "title", nullable = false)
-    @Length(max = 100)
+    @Length(max = 500)
     private String title;
 
     @Column(name = "min_price", nullable = false)

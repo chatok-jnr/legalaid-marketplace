@@ -10,7 +10,7 @@ import java.util.UUID;
 public class GigRequest {
     @Data
     public static class CreateGig {
-        @Length(max = 100)
+        @Length(max = 500)
         @NotNull
         private String title;
 
