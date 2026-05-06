@@ -1,4 +1,4 @@
-package com.legal_marketplace.legal_marketplace.repository.projectiions;
+package com.legal_marketplace.legal_marketplace.repository.projections;
 
 import java.util.UUID;
 

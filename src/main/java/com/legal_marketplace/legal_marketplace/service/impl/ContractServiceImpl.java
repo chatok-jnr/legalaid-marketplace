@@ -14,8 +14,8 @@ import com.legal_marketplace.legal_marketplace.repository.ContractRepository;
 import com.legal_marketplace.legal_marketplace.repository.GigRepository;
 import com.legal_marketplace.legal_marketplace.repository.PaymentRepository;
 import com.legal_marketplace.legal_marketplace.repository.UserRepository;
-import com.legal_marketplace.legal_marketplace.repository.projectiions.ContractExtendedViewProjection;
-import com.legal_marketplace.legal_marketplace.repository.projectiions.ContractViewProjection;
+import com.legal_marketplace.legal_marketplace.repository.projections.ContractExtendedViewProjection;
+import com.legal_marketplace.legal_marketplace.repository.projections.ContractViewProjection;
 import com.legal_marketplace.legal_marketplace.service.ContractService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

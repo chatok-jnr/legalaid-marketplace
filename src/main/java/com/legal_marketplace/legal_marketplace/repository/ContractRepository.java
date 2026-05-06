@@ -1,9 +1,8 @@
 package com.legal_marketplace.legal_marketplace.repository;
 
-import com.legal_marketplace.legal_marketplace.dto.response.ContractResponse;
 import com.legal_marketplace.legal_marketplace.entity.Contract;
-import com.legal_marketplace.legal_marketplace.repository.projectiions.ContractExtendedViewProjection;
-import com.legal_marketplace.legal_marketplace.repository.projectiions.ContractViewProjection;
+import com.legal_marketplace.legal_marketplace.repository.projections.ContractExtendedViewProjection;
+import com.legal_marketplace.legal_marketplace.repository.projections.ContractViewProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

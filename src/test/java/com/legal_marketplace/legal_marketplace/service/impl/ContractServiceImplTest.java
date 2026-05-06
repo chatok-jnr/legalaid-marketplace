@@ -9,7 +9,7 @@ import com.legal_marketplace.legal_marketplace.repository.ContractRepository;
 import com.legal_marketplace.legal_marketplace.repository.GigRepository;
 import com.legal_marketplace.legal_marketplace.repository.PaymentRepository;
 import com.legal_marketplace.legal_marketplace.repository.UserRepository;
-import com.legal_marketplace.legal_marketplace.repository.projectiions.ContractExtendedViewProjection;
+import com.legal_marketplace.legal_marketplace.repository.projections.ContractExtendedViewProjection;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationHandler;

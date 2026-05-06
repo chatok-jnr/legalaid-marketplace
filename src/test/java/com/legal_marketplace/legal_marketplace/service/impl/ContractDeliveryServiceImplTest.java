@@ -5,7 +5,7 @@ import com.legal_marketplace.legal_marketplace.entity.User;
 import com.legal_marketplace.legal_marketplace.repository.ContractDeliveryRepository;
 import com.legal_marketplace.legal_marketplace.repository.ContractRepository;
 import com.legal_marketplace.legal_marketplace.repository.UserRepository;
-import com.legal_marketplace.legal_marketplace.repository.projectiions.ContractDeliveryWithFiles;
+import com.legal_marketplace.legal_marketplace.repository.projections.ContractDeliveryWithFiles;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.ObjectMapper;
 

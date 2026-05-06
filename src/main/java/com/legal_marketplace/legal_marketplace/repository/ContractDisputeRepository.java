@@ -13,5 +13,4 @@ import java.util.UUID;
 public interface ContractDisputeRepository extends JpaRepository<ContractDispute, UUID> {
     Optional<ContractDispute> findByContractId(UUID contractId);
     boolean existsByContractId(UUID contractId);
-    List<ContractDispute> findByDisputeStatus(DisputeStatus status);
 }

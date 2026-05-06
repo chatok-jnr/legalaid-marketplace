@@ -11,4 +11,11 @@ public class ContractDisputeExceptions {
             super("Dispute for this contract already exists");
         }
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public static class BadRequest extends RuntimeException {
+        public BadRequest(String message) {
+            super(message);
+        }
+    }
 }

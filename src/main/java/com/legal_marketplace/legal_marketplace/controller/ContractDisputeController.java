@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/disputes")
 @RequiredArgsConstructor
-public class DisputeController {
+public class ContractDisputeController {
     /**
      * Get authenticated user email from SecurityContext
      */

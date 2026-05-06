@@ -23,7 +23,7 @@ public class ContractDispute {
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contract_id", nullable = false)
     private Contract contract;
 

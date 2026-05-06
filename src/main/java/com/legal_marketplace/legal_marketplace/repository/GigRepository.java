@@ -1,8 +1,8 @@
 package com.legal_marketplace.legal_marketplace.repository;
 
 import com.legal_marketplace.legal_marketplace.entity.Gig;
-import com.legal_marketplace.legal_marketplace.repository.projectiions.PublicGigView;
-import com.legal_marketplace.legal_marketplace.repository.projectiions.PublicGigViewInDetails;
+import com.legal_marketplace.legal_marketplace.repository.projections.PublicGigView;
+import com.legal_marketplace.legal_marketplace.repository.projections.PublicGigViewInDetails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

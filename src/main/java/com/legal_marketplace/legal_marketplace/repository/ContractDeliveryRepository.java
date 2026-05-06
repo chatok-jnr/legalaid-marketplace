@@ -1,7 +1,7 @@
 package com.legal_marketplace.legal_marketplace.repository;
 
 import com.legal_marketplace.legal_marketplace.entity.ContractDelivery;
-import com.legal_marketplace.legal_marketplace.repository.projectiions.ContractDeliveryWithFiles;
+import com.legal_marketplace.legal_marketplace.repository.projections.ContractDeliveryWithFiles;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

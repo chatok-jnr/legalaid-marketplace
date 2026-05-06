@@ -12,7 +12,7 @@ import com.legal_marketplace.legal_marketplace.exception.UserExceptions;
 import com.legal_marketplace.legal_marketplace.repository.ContractDeliveryRepository;
 import com.legal_marketplace.legal_marketplace.repository.ContractRepository;
 import com.legal_marketplace.legal_marketplace.repository.UserRepository;
-import com.legal_marketplace.legal_marketplace.repository.projectiions.ContractDeliveryWithFiles;
+import com.legal_marketplace.legal_marketplace.repository.projections.ContractDeliveryWithFiles;
 import com.legal_marketplace.legal_marketplace.service.ContractDeliveryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

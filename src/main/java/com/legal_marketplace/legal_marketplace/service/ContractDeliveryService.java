@@ -2,7 +2,6 @@ package com.legal_marketplace.legal_marketplace.service;
 
 import com.legal_marketplace.legal_marketplace.dto.request.ContractDeliveryRequest;
 import com.legal_marketplace.legal_marketplace.dto.response.ContractDeliveryResponse;
-import com.legal_marketplace.legal_marketplace.repository.projectiions.ContractDeliveryWithFiles;
 
 import java.util.List;
 import java.util.UUID;
