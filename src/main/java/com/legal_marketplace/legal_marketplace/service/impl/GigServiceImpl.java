@@ -9,6 +9,7 @@ import com.legal_marketplace.legal_marketplace.exception.UserExceptions;
 import com.legal_marketplace.legal_marketplace.repository.GigRepository;
 import com.legal_marketplace.legal_marketplace.repository.UserRepository;
 import com.legal_marketplace.legal_marketplace.repository.projectiions.PublicGigView;
+import com.legal_marketplace.legal_marketplace.repository.projectiions.PublicGigViewInDetails;
 import com.legal_marketplace.legal_marketplace.service.GigService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +58,8 @@ public class GigServiceImpl implements GigService {
             throw new UserExceptions.AccessDeniedException();
         }
 
+        if(request.getTitle() != null) gig.setTitle(request.getTitle());
+        if(request.getMaxRevision() != 0) gig.setMaxRevision(request.getMaxRevision());
         if(request.getMinPrice() != null) gig.setMinPrice(request.getMinPrice());
         if(request.getAboutThisGig() != null) gig.setAboutThisGig(request.getAboutThisGig());
         if(request.isPublic() != gig.isPublic()) gig.setPublic(request.isPublic());
@@ -75,7 +78,7 @@ public class GigServiceImpl implements GigService {
         List<Gig> gigs = gigRepository.findByLawyerId(user.getId());
 
         List<GigResponse.MyGig> myGigs = new ArrayList<>();
-        for(int i = 0; i < gigs.size(); i++) myGigs.add(mapToMyGig(gigs.get(i)));
+        for (Gig gig : gigs) myGigs.add(mapToMyGig(gig));
         return myGigs;
     }
 
@@ -115,25 +118,34 @@ public class GigServiceImpl implements GigService {
         });
     }
 
-    // Get public gig by gig id
     @Override
-    public GigResponse.OtherGig getPublicGigByGigId(UUID id) {
-        Gig gig = gigRepository.findById(id)
+    public GigResponse.OthersGigDetails getPublicGigDetailsByGigId(UUID gigId) {
+        PublicGigViewInDetails gigDetails = gigRepository.findPublicGigDetailsByGigId(gigId)
                 .orElseThrow(GigExceptions.GigNotFoundException::new);
 
-        if(!gig.isPublic()) {
-            throw new GigExceptions.GigNotFoundException();
-        }
+        PublicGigView gigBasicDetails = gigRepository.findPublicGigBasicByGigId(gigId)
+                .orElseThrow(GigExceptions.GigNotFoundException::new);
 
-        return GigResponse.OtherGig.builder()
-                .id(gig.getId())
-                .title(gig.getTitle())
-                .lawyerId(gig.getLawyerId())
-                .minPrice(gig.getMinPrice())
-                .aboutThisGig(gig.getAboutThisGig())
-                .updatedAt(gig.getUpdatedAt())
+        return GigResponse.OthersGigDetails.builder()
+                .gigBasicInfo(GigResponse.OthersGig.builder()
+                        .id(gigBasicDetails.getId())
+                        .title(gigBasicDetails.getTitle())
+                        .allMedia(parseMediaFiles(gigBasicDetails.getMediaFiles()))
+                        .lawyerId(gigBasicDetails.getLawyerId())
+                        .minPrice(gigBasicDetails.getMinPrice())
+                        .lawyerName(gigBasicDetails.getFullName())
+                        .lawyerProfilePicUrl(gigBasicDetails.getProfilePicUrl())
+                        .build())
+                .barNumber(gigDetails.getBar_number())
+                .bio(gigDetails.getBio())
+                .maxRevision(gigDetails.getMaxRevision())
+                .specializations(gigDetails.getSpecializations())
+                .yearsExperience(gigDetails.getYears_experience())
+                .memberSince(gigDetails.getMember_since())
+                .aboutThisGig(gigDetails.getAbout_this_gig())
                 .build();
     }
+
 
 
     // --------------------------------------------------------------------------------
@@ -144,14 +156,7 @@ public class GigServiceImpl implements GigService {
         return Gig.builder()
                 .title(request.getTitle())
                 .minPrice(request.getMinPrice())
-                .aboutThisGig(request.getAboutThisGig())
-                .isPublic(request.isPublic())
-                .build();
-    }
-    private Gig updateDtoToEntity(GigRequest.UpdateGig request) {
-        return Gig.builder()
-                .title(request.getTitle())
-                .minPrice(request.getMinPrice())
+                .maxRevision(request.getMaxRevision())
                 .aboutThisGig(request.getAboutThisGig())
                 .isPublic(request.isPublic())
                 .build();
@@ -162,6 +167,7 @@ public class GigServiceImpl implements GigService {
                 .title(gig.getTitle())
                 .lawyerId(gig.getLawyerId())
                 .minPrice(gig.getMinPrice())
+                .maxRevision(gig.getMaxRevision())
                 .aboutThisGig(gig.getAboutThisGig())
                 .isPublic(gig.isPublic())
                 .createdAt(gig.getCreatedAt())
@@ -176,7 +182,7 @@ public class GigServiceImpl implements GigService {
                     ? List.of()
                     : objectMapper.readValue(
                     mediaFilesJson,
-                    new TypeReference<List<GigResponse.MediaInfoForPublicGig>>() {}
+                    new TypeReference<>() {}
             );
         } catch (Exception e) {
             log.error("Error parsing media files JSON: {}", e.getMessage());

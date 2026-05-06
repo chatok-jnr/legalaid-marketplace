@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.awt.print.Pageable;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +24,7 @@ public class GigResponse {
         private UUID id;
         private UUID lawyerId;
         private String title;
+        private int maxRevision;
         private int minPrice;
         private String aboutThisGig;
         private boolean isPublic;
@@ -30,18 +32,6 @@ public class GigResponse {
         private OffsetDateTime updatedAt;
     }
 
-//    @Data
-//    @Builder
-//    public static class OthersGig {
-//        private UUID id;
-//        private UUID lawyerId;
-//
-//        private String title;
-//        private int minPrice;
-//        private String aboutThisGig;
-//        List<GigMediaResponse> gigMediaResponses;
-//        private OffsetDateTime updatedAt;
-//    }
     // Others Gigs - Accessible to all users, includes lawyer's name and profile pic
     @Data
     @Builder
@@ -75,16 +65,20 @@ public class GigResponse {
         private UUID lawyerId;
         private String title;
         private int minPrice;
-        private String aboutThisGig;
         private OffsetDateTime updatedAt;
     }
 
     @Data
     @Builder
     public static class OthersGigDetails {
+        private OthersGig gigBasicInfo;
+        private String barNumber;
+        private String bio;
+        private int maxRevision;
+        private List<String> specializations;
+        private int yearsExperience;
         private String aboutThisGig;
-        private String lawyerEmail;
-        private OffsetDateTime updatedAt;
+        private Instant memberSince;
     }
 
 }

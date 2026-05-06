@@ -87,15 +87,15 @@ public class GigController {
                 .body(gigService.getAllPublicGigs(pageable));
     }
 
-    // Get a specific public gig by id
+    // Get public gig in details by gig id
     @PreAuthorize("hasAnyRole('LAWYER', 'CLIENT', 'ADMIN')")
     @GetMapping("/public/{gigId}")
-    public ResponseEntity<GigResponse.OtherGig> getPublicGigByGigId(
+    public ResponseEntity<GigResponse.OthersGigDetails> getPublicGigDetailsByGigId(
             @PathVariable("gigId") UUID gigId
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(gigService.getPublicGigByGigId(gigId));
+                .body(gigService.getPublicGigDetailsByGigId(gigId));
     }
 }
 

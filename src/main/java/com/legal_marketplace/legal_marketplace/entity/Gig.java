@@ -2,7 +2,6 @@ package com.legal_marketplace.legal_marketplace.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import jdk.jfr.Timespan;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -29,6 +28,9 @@ public class Gig {
     @Column(name = "title", nullable = false)
     @Length(max = 500)
     private String title;
+
+    @Column(name = "max_revision", nullable = false)
+    private int maxRevision = 0;
 
     @Column(name = "min_price", nullable = false)
     @Min(1)

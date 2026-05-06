@@ -14,5 +14,5 @@ public interface GigService {
     List<GigResponse.MyGig> myGigs(String email);
     void deleteGig(UUID id, String email);
     Page<GigResponse.OthersGig> getAllPublicGigs(Pageable pageable);
-    GigResponse.OtherGig getPublicGigByGigId(UUID id);
+    GigResponse.OthersGigDetails getPublicGigDetailsByGigId(UUID gigId);
 }

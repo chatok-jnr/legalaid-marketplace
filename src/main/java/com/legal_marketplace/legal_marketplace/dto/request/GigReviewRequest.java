@@ -12,12 +12,13 @@ public class GigReviewRequest {
     @Builder
     @Data
     public static class Create {
+        @NotNull
         private UUID gigId;
         // user id will be taken from the token, so no need to include it in the request body
         @NotNull
         @Min(1)
         @Max(5)
-        private int rating;
+        private Integer rating;
         private String comment;
     }
 
