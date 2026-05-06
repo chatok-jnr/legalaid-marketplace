@@ -201,6 +201,58 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    @ExceptionHandler(BkashPaymentExceptions.NotFound.class)
+    public ResponseEntity<ErrorResponse> handleBkashPaymentNotFound(BkashPaymentExceptions.NotFound ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ErrorResponse.of(
+                        HttpStatus.NOT_FOUND.value(),
+                        HttpStatus.NOT_FOUND.getReasonPhrase(),
+                        ex.getMessage(),
+                        "path will be updated soon"
+                ));
+    }
+
+    @ExceptionHandler(BkashPaymentExceptions.AlreadyExists.class)
+    public ResponseEntity<ErrorResponse> handleBkashPaymentAlreadyExists(BkashPaymentExceptions.AlreadyExists ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ErrorResponse.of(
+                        HttpStatus.CONFLICT.value(),
+                        HttpStatus.CONFLICT.getReasonPhrase(),
+                        ex.getMessage(),
+                        "path will be updated soon"
+                ));
+    }
+
+    @ExceptionHandler(BkashPaymentExceptions.DuplicateTransactionId.class)
+    public ResponseEntity<ErrorResponse> handleBkashPaymentDuplicateTransactionId(BkashPaymentExceptions.DuplicateTransactionId ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ErrorResponse.of(
+                        HttpStatus.CONFLICT.value(),
+                        HttpStatus.CONFLICT.getReasonPhrase(),
+                        ex.getMessage(),
+                        "path will be updated soon"
+                ));
+    }
+
+    @ExceptionHandler(BkashPaymentExceptions.BadRequest.class)
+    public ResponseEntity<ErrorResponse> handleBkashPaymentBadRequest(BkashPaymentExceptions.BadRequest ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(
+                        HttpStatus.BAD_REQUEST.value(),
+                        HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                        ex.getMessage(),
+                        "path will be updated soon"
+                ));
+    }
+
     // ==================================
     // =======Contract Delivery
     // ==================================
