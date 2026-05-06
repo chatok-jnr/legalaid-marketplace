@@ -1,9 +1,13 @@
 package com.legal_marketplace.legal_marketplace.controller;
 
 import com.legal_marketplace.legal_marketplace.service.CloudinaryService;
+import com.legal_marketplace.legal_marketplace.validation.NotEmptyFile;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Validated
 @RestController
 @RequestMapping("/api/files")
 @RequiredArgsConstructor
@@ -20,21 +25,14 @@ public class FileUploadController {
     @PreAuthorize("hasAnyRole('LAWYER')")
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadFile(
+            @NotEmptyFile
             @RequestParam("file")
             MultipartFile file
     ) {
         try{
-            if(file.isEmpty()) {
-                throw new RuntimeException("File is empty");
-            }
-
-            //String fileUrl = cloudinaryService.uploadFile(file, "legalAid/lawyer-gigs-media");
-
             Map<String, String> response = cloudinaryService.uploadFile(file, "legalAid/lawyer-gigs-media");
-           // response.put("url", fileUrl);
             return ResponseEntity.ok(response);
         } catch(IOException e) {
-            e.printStackTrace();
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", "Upload failed: " + e.getMessage());
             return ResponseEntity.badRequest().body(errorResponse);
@@ -44,13 +42,14 @@ public class FileUploadController {
     @PreAuthorize("hasRole('LAWYER')")
     @DeleteMapping("/delete")
     public ResponseEntity<Map<String, String>> deleteFile(
+            @NotBlank
             @RequestParam("publicId") String publicId,
+            @NotBlank
+            @Pattern(regexp = "^(image|video|raw)$", message = "resourceType must be image, video, or raw")
             @RequestParam(value = "resourceType", defaultValue = "image") String resourceType) {
 
         try {
             Map<?, ?> result = cloudinaryService.deleteFile(publicId, resourceType);
-
-            System.out.println(publicId);
 
             Map<String, String> response = new HashMap<>();
 
