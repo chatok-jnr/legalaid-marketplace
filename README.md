@@ -24,6 +24,18 @@ This service manages:
 - Cloudinary
 - JWT
 
+## Docker
+
+The repo includes a root-level [Dockerfile](./Dockerfile) that builds the packaged Spring Boot jar into a Java 21 Alpine image.
+
+```bash
+./mvnw clean package -DskipTests
+docker build -t legal-marketplace:local .
+docker run --rm -p 8080:8080 --env-file .env legal-marketplace:local
+```
+
+The container exposes port `8080`.
+
 ## Authentication
 
 All API routes under `/api/**` require a valid JWT **except** `/api/validate/**`, which is explicitly allowed in `SecurityConfig`.

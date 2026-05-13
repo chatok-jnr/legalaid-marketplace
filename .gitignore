@@ -34,4 +34,7 @@ build/
 
 # Local environment and app config
 .env
-application.properties
+
+# bash scripts
+deploy.sh
+*.sh

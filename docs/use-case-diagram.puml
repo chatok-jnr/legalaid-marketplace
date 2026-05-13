@@ -1,0 +1,106 @@
+@startuml
+' All API use cases in this diagram require JWT authentication,
+' except the public /api/validate/** route, which is not modeled here.
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam actorStyle stickman
+
+actor Lawyer
+actor Client
+actor Admin
+actor Cloudinary
+
+rectangle "Legal Marketplace API" {
+  package "Gig marketplace" {
+    usecase "Create gig" as UC_CreateGig
+    usecase "Update gig" as UC_UpdateGig
+    usecase "List own gigs" as UC_ListOwnGigs
+    usecase "Delete gig" as UC_DeleteGig
+    usecase "Browse public gigs" as UC_BrowsePublicGigs
+    usecase "View public gig details" as UC_ViewGigDetails
+  }
+
+  package "Media and files" {
+    usecase "Upload file" as UC_UploadFile
+    usecase "Delete file" as UC_DeleteFile
+    usecase "Create gig media" as UC_CreateGigMedia
+    usecase "Update gig media order" as UC_UpdateGigMedia
+    usecase "View gig media" as UC_ViewGigMedia
+    usecase "Delete gig media" as UC_DeleteGigMedia
+    usecase "Delete all gig media" as UC_DeleteAllGigMedia
+    usecase "Register delivery file" as UC_RegisterDeliveryFile
+    usecase "Upload delivery file" as UC_UploadDeliveryFile
+    usecase "Delete delivery file" as UC_DeleteDeliveryFile
+  }
+
+  package "Contract workflow" {
+    usecase "Create contract" as UC_CreateContract
+    usecase "View my contracts" as UC_ViewMyContracts
+    usecase "View contract details" as UC_ViewContract
+    usecase "Cancel contract" as UC_CancelContract
+    usecase "Create delivery" as UC_CreateDelivery
+    usecase "List contract deliveries" as UC_ListDeliveries
+    usecase "View delivery details" as UC_ViewDelivery
+  }
+
+  package "Reviews, payments, disputes" {
+    usecase "Create review" as UC_CreateReview
+    usecase "Update review" as UC_UpdateReview
+    usecase "Create payment" as UC_CreatePayment
+    usecase "Open dispute" as UC_OpenDispute
+  }
+}
+
+Lawyer --> UC_CreateGig
+Lawyer --> UC_UpdateGig
+Lawyer --> UC_ListOwnGigs
+Lawyer --> UC_DeleteGig
+Lawyer --> UC_BrowsePublicGigs
+Lawyer --> UC_ViewGigDetails
+Lawyer --> UC_UploadFile
+Lawyer --> UC_DeleteFile
+Lawyer --> UC_CreateGigMedia
+Lawyer --> UC_UpdateGigMedia
+Lawyer --> UC_ViewGigMedia
+Lawyer --> UC_DeleteGigMedia
+Lawyer --> UC_DeleteAllGigMedia
+Lawyer --> UC_CreateReview
+Lawyer --> UC_UpdateReview
+Lawyer --> UC_ViewMyContracts
+Lawyer --> UC_ViewContract
+Lawyer --> UC_CancelContract
+Lawyer --> UC_CreateDelivery
+Lawyer --> UC_ListDeliveries
+Lawyer --> UC_ViewDelivery
+Lawyer --> UC_RegisterDeliveryFile
+Lawyer --> UC_UploadDeliveryFile
+Lawyer --> UC_DeleteDeliveryFile
+Lawyer --> UC_OpenDispute
+
+Client --> UC_BrowsePublicGigs
+Client --> UC_ViewGigDetails
+Client --> UC_ViewGigMedia
+Client --> UC_CreateReview
+Client --> UC_UpdateReview
+Client --> UC_CreateContract
+Client --> UC_ViewMyContracts
+Client --> UC_ViewContract
+Client --> UC_CancelContract
+Client --> UC_ListDeliveries
+Client --> UC_ViewDelivery
+Client --> UC_CreatePayment
+Client --> UC_OpenDispute
+
+Admin --> UC_BrowsePublicGigs
+Admin --> UC_ViewGigDetails
+Admin --> UC_ViewGigMedia
+Admin --> UC_DeleteGigMedia
+Admin --> UC_DeleteAllGigMedia
+
+Cloudinary --> UC_UploadFile
+Cloudinary --> UC_DeleteFile
+Cloudinary --> UC_UploadDeliveryFile
+
+@enduml
