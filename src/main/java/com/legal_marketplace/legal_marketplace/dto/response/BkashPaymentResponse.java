@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -19,8 +20,8 @@ public class BkashPaymentResponse {
         private String transactionId;
         private BigDecimal amount;
         private BkashPaymentStatus status;
-        private OffsetDateTime createdAt;
-        private OffsetDateTime updatedAt;
+        private Instant createdAt;
+        private Instant updatedAt;
     }
 
     @Data
@@ -37,10 +38,10 @@ public class BkashPaymentResponse {
         private BigDecimal amount;
         private BkashPaymentStatus status;
         private UUID verifiedBy;
-        private OffsetDateTime verifiedAt;
+        private Instant verifiedAt;
         private String rejectionReason;
-        private OffsetDateTime createdAt;
-        private OffsetDateTime updatedAt;
+        private Instant createdAt;
+        private Instant updatedAt;
     }
 
     @Data
@@ -50,8 +51,43 @@ public class BkashPaymentResponse {
         private UUID contractPaymentId;
         private BkashPaymentStatus status;
         private UUID verifiedBy;
-        private OffsetDateTime verifiedAt;
+        private Instant verifiedAt;
         private String rejectionReason;
-        private OffsetDateTime updatedAt;
+        private Instant updatedAt;
+    }
+
+    // For admin
+    @Data
+    @Builder
+    public static class BasicView{
+        private UUID id;
+        private BigDecimal amount;
+        private String method;
+        private Instant submitted;
+        private BkashPaymentStatus status;
+    }
+
+    @Data
+    @Builder
+    public static class ExtendedView{
+        private UUID id;
+
+        private Integer platformFeeAmount;
+        private Integer lawyerPayoutAmount;
+
+        private String senderNumber;
+        private String receiverNumber;
+        private String transactionId;
+        private BigDecimal amount;
+
+        private BkashPaymentStatus status;
+
+        private UUID verifiedBy;
+        private Instant verifiedAt;
+
+        private String rejectionReason;
+
+        private Instant createdAt;
+        private Instant updatedAt;
     }
 }

@@ -311,6 +311,19 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    @ExceptionHandler(ContractDisputeExceptions.NotFound.class)
+    public ResponseEntity<ErrorResponse> handleContractDisputeNotFound(ContractDeliveryExceptions.NotFound ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ErrorResponse.of(
+                        HttpStatus.NOT_FOUND.value(),
+                        HttpStatus.NOT_FOUND.getReasonPhrase(),
+                        ex.getMessage(),
+                        "path will be updated soon"
+                ));
+    }
+
     @ExceptionHandler(ContractDisputeExceptions.BadRequest.class)
     public ResponseEntity<ErrorResponse> handleContractDisputeException(ContractDisputeExceptions.BadRequest ex) {
         log.error(ex.getMessage());

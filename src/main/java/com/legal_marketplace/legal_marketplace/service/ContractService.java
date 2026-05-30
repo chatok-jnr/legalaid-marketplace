@@ -11,7 +11,7 @@ public interface ContractService {
     ContractResponse.Create createContract(ContractRequest.Crete request, String clientEmail); // Only Client
     ContractResponse.ContractExtendedView cancelContract(ContractRequest.Cancel request, UUID contractId,String userEmail);
     List<ContractResponse.ContractView> getMyContracts(String userEmail, String role);
-    ContractResponse.ContractExtendedView getContractById(UUID contractId, String userEmail);
+    ContractResponse.ContractExtendedView getContractById(UUID contractId, String userEmail, Boolean isAdmin);
 
     // Accept and Reject methods for Lawyer
     ContractStatus acceptContract(UUID contractId, String lawyerEmail);

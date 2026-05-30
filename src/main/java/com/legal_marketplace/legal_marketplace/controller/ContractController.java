@@ -58,14 +58,19 @@ public class ContractController {
                 .body(contractService.getMyContracts(getAuthenticatedUserEmail(), role.toUpperCase()));
     }
 
+
     @GetMapping("/{contractId}")
-    @PreAuthorize("hasAnyRole('LAWYER', 'CLIENT')")
+    @PreAuthorize("hasAnyRole('LAWYER', 'CLIENT', 'ADMIN')")
     public ResponseEntity<ContractResponse.ContractExtendedView> getContract(
             @PathVariable("contractId") UUID contractId
     ) {
+        Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
+        Boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(contractService.getContractById(contractId, getAuthenticatedUserEmail()));
+                .body(contractService.getContractById(contractId, getAuthenticatedUserEmail(), isAdmin));
     }
 
     // Accept contract by lawyer, only if contract is in PENDING status and the authenticated user is the assigned lawyer

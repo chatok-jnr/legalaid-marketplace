@@ -1,12 +1,16 @@
 package com.legal_marketplace.legal_marketplace.dto.request;
 
+import com.legal_marketplace.legal_marketplace.entity.enums.BkashPaymentStatus;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -42,5 +46,15 @@ public class BkashPaymentRequest {
         @NotBlank(message = "Rejection reason is required")
         @Size(max = 5000, message = "Rejection reason must be at most 5000 characters")
         private String rejectionReason;
+    }
+
+    // Update by Admin
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateStatus {
+        String status;
+        String rejectionReason;
     }
 }

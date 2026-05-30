@@ -10,14 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -70,5 +65,38 @@ public class BkashPaymentController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(bkashPaymentService.reject(contractPaymentId, request, getAuthenticatedUserEmail()));
+    }
+
+    // For Admin
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<BkashPaymentResponse.BasicView>> getBkashPayments(
+            @RequestParam String status,
+            @RequestParam int page
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(bkashPaymentService.getAllByStatusForAdmin(status, page, 20, getAuthenticatedUserEmail()));
+    }
+
+    @GetMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<BkashPaymentResponse.ExtendedView> getBkashPaymentById(
+            @PathVariable UUID id
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(bkashPaymentService.getPaymentDetailsById(id));
+    }
+
+    @PatchMapping("/admin/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<BkashPaymentResponse.ExtendedView> updateBkashPaymentById(
+            @PathVariable("id") UUID id,
+            @RequestBody BkashPaymentRequest.UpdateStatus request
+    ){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(bkashPaymentService.updStatus(id, request, getAuthenticatedUserEmail()));
     }
 }

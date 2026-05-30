@@ -7,6 +7,7 @@ import com.legal_marketplace.legal_marketplace.entity.ContractPayment;
 import com.legal_marketplace.legal_marketplace.entity.Gig;
 import com.legal_marketplace.legal_marketplace.entity.User;
 import com.legal_marketplace.legal_marketplace.entity.enums.ContractStatus;
+import com.legal_marketplace.legal_marketplace.entity.enums.DisputeStatus;
 import com.legal_marketplace.legal_marketplace.exception.ContractExceptions;
 import com.legal_marketplace.legal_marketplace.exception.GigExceptions;
 import com.legal_marketplace.legal_marketplace.exception.UserExceptions;
@@ -134,15 +135,15 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override // Get contract Extended view by id
-    public ContractResponse.ContractExtendedView getContractById(UUID contractId, String userEmail) {
+    public ContractResponse.ContractExtendedView getContractById(UUID contractId, String userEmail, Boolean isAdmin) {
         ContractExtendedViewProjection cev = contractRepository.findContractById(contractId);
 
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(UserExceptions.UserNotFoundException::new);
 
-        System.out.println(userEmail);
+        System.out.println("Debug from contract service: " + isAdmin);
 
-        if(!user.getId().equals(cev.getClientId()) && !user.getId().equals(cev.getLawyerId())){
+        if(!user.getId().equals(cev.getClientId()) && !user.getId().equals(cev.getLawyerId()) && !isAdmin){
             throw new UserExceptions.AccessDeniedException();
         }
 

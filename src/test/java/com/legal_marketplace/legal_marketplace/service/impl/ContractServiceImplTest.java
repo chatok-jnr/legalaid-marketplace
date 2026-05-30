@@ -98,7 +98,7 @@ class ContractServiceImplTest {
 
         ContractServiceImpl service = new ContractServiceImpl(contractRepository, gigRepository, userRepository, paymentRepository);
 
-        ContractResponse.ContractExtendedView response = service.getContractById(contractId, client.getEmail());
+        ContractResponse.ContractExtendedView response = service.getContractById(contractId, client.getEmail(), false);
 
         assertEquals(clientId, response.getClientId());
         assertEquals(lawyerId, response.getLawyerId());

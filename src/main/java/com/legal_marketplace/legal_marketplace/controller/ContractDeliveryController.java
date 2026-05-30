@@ -45,7 +45,7 @@ public class ContractDeliveryController {
 
     // Get all delivery by contract id
     @GetMapping("/contract/{contractId}")
-    @PreAuthorize("hasAnyRole('CLIENT', 'LAWYER')")
+    @PreAuthorize("hasAnyRole('CLIENT', 'LAWYER', 'ADMIN')")
     public ResponseEntity<List<ContractDeliveryResponse.Create>> getAllDeliveriesByContractId(
             @PathVariable("contractId") UUID contractId
     ) {

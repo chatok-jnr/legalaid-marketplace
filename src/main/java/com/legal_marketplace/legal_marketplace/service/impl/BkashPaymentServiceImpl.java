@@ -15,11 +15,17 @@ import com.legal_marketplace.legal_marketplace.repository.PaymentRepository;
 import com.legal_marketplace.legal_marketplace.repository.UserRepository;
 import com.legal_marketplace.legal_marketplace.service.BkashPaymentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -114,7 +120,7 @@ public class BkashPaymentServiceImpl implements BkashPaymentService {
 
         bkashPayment.setStatus(BkashPaymentStatus.VERIFIED);
         bkashPayment.setVerifiedBy(admin.getId());
-        bkashPayment.setVerifiedAt(OffsetDateTime.now());
+        bkashPayment.setVerifiedAt(Instant.now());
         bkashPayment.setRejectionReason(null);
 
         return mapVerification(bkashPaymentRepository.save(bkashPayment));
@@ -135,13 +141,117 @@ public class BkashPaymentServiceImpl implements BkashPaymentService {
 
         bkashPayment.setStatus(BkashPaymentStatus.REJECTED);
         bkashPayment.setVerifiedBy(admin.getId());
-        bkashPayment.setVerifiedAt(OffsetDateTime.now());
+        bkashPayment.setVerifiedAt(Instant.now());
         bkashPayment.setRejectionReason(request.getRejectionReason());
 
         return mapVerification(bkashPaymentRepository.save(bkashPayment));
     }
 
+    @Override
+    public List<BkashPaymentResponse.BasicView> getAllByStatusForAdmin(String status, int page, int size, String adminEmail) {
+        Page<BkashPayment> bkashPaymentsPage = Page.empty();
 
+        User admin = userRepository.findByEmail(adminEmail)
+                .orElseThrow(UserExceptions.UserNotFoundException::new);
+
+        if(!status.equalsIgnoreCase(BkashPaymentStatus.PENDING.name())) {
+            Pageable pageable = PageRequest.of(page, size,  Sort.by(Sort.Direction.DESC, "createdAt"));
+            bkashPaymentsPage = bkashPaymentRepository.findByStatusAndVerifiedBy(BkashPaymentStatus.valueOf(status), admin.getId(), pageable);
+        } else {
+            Pageable pageable = PageRequest.of(page, size,  Sort.by(Sort.Direction.DESC, "createdAt"));
+            bkashPaymentsPage = bkashPaymentRepository.findByStatusAndVerifiedByIsNull(BkashPaymentStatus.valueOf(status), pageable);
+        }
+
+        List<BkashPaymentResponse.BasicView> res = new ArrayList<>();
+        for(BkashPayment bkashPayment: bkashPaymentsPage.getContent()) {
+            res.add(
+                    BkashPaymentResponse.BasicView.builder()
+                            .id(bkashPayment.getId())
+                            .amount(bkashPayment.getAmount())
+                            .method("BKASH")
+                            .submitted(bkashPayment.getCreatedAt())
+                            .status(bkashPayment.getStatus())
+                            .build()
+            );
+        }
+
+        return res;
+    }
+
+    @Override
+    public BkashPaymentResponse.ExtendedView getPaymentDetailsById(UUID id) {
+        BkashPayment bkashPayment = bkashPaymentRepository.findById(id)
+                .orElseThrow(BkashPaymentExceptions.NotFound::new);
+
+        return BkashPaymentResponse.ExtendedView.builder()
+                .id(bkashPayment.getId())
+                .platformFeeAmount(bkashPayment.getContractPayment().getPlatformFeeAmount())
+                .lawyerPayoutAmount(bkashPayment.getContractPayment().getLawyerPayoutAmount())
+                .senderNumber(bkashPayment.getSenderNumber())
+                .receiverNumber(bkashPayment.getReceiverNumber())
+                .transactionId(bkashPayment.getTransactionId())
+                .amount(bkashPayment.getAmount())
+                .status(bkashPayment.getStatus())
+                .verifiedBy(bkashPayment.getVerifiedBy())
+                .verifiedAt(bkashPayment.getVerifiedAt())
+                .rejectionReason(bkashPayment.getRejectionReason())
+                .createdAt(bkashPayment.getCreatedAt())
+                .updatedAt(bkashPayment.getUpdatedAt())
+                .build();
+    }
+
+    @Override
+    public BkashPaymentResponse.ExtendedView updStatus(UUID id, BkashPaymentRequest.UpdateStatus request, String adminEmail) {
+        BkashPayment payment = bkashPaymentRepository.findById(id)
+                .orElseThrow(BkashPaymentExceptions.NotFound::new);
+        User admin = userRepository.findByEmail(adminEmail)
+                .orElseThrow(UserExceptions.UserNotFoundException::new);
+
+        if(!payment.getStatus().equals(BkashPaymentStatus.PENDING)) {
+            throw new BkashPaymentExceptions.BadRequest("Only pending payments can be updated");
+        }
+
+        BkashPaymentStatus reqStatus = BkashPaymentStatus.valueOf(request.getStatus());
+        ContractPayment contractPayment = payment.getContractPayment();
+
+
+
+        if(reqStatus.equals(BkashPaymentStatus.VERIFIED)) {
+            payment.setVerifiedBy(admin.getId());
+            payment.setVerifiedAt(Instant.now());
+            payment.setStatus(BkashPaymentStatus.VERIFIED);
+            contractPayment.setPaymentStatus(PaymentStatus.HELD);
+            contractPayment.setPaidAt(Instant.now());
+            contractPayment.setPaymentReference("bKash");
+            paymentRepository.save(contractPayment);
+        } else if(reqStatus.equals(BkashPaymentStatus.REJECTED)) {
+            if(request.getRejectionReason() == null) {
+                throw new BkashPaymentExceptions.BadRequest("Rejection reason can't be null");
+            }
+            payment.setRejectionReason(request.getRejectionReason());
+            payment.setStatus(reqStatus);
+        } else {
+            throw new BkashPaymentExceptions.BadRequest("Invalid request");
+        }
+
+        bkashPaymentRepository.save(payment);
+
+        return BkashPaymentResponse.ExtendedView.builder()
+                .id(payment.getId())
+                .platformFeeAmount(payment.getContractPayment().getPlatformFeeAmount())
+                .lawyerPayoutAmount(payment.getContractPayment().getLawyerPayoutAmount())
+                .senderNumber(payment.getSenderNumber())
+                .receiverNumber(payment.getReceiverNumber())
+                .transactionId(payment.getTransactionId())
+                .amount(payment.getAmount())
+                .status(payment.getStatus())
+                .verifiedBy(payment.getVerifiedBy())
+                .verifiedAt(payment.getVerifiedAt())
+                .rejectionReason(payment.getRejectionReason())
+                .createdAt(payment.getCreatedAt())
+                .updatedAt(payment.getUpdatedAt())
+                .build();
+    }
 
     // =============================================
     // ==================Functions==================
